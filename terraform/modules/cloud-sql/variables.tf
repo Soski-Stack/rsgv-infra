@@ -1,48 +1,59 @@
 variable "instance_name" {
-  type = string
+  description = "Cloud SQL instance name (must match existing GCP resource if importing)"
+  type        = string
 }
 
 variable "database_version" {
-  type    = string
-  default = "POSTGRES_15"
+  description = "Database engine version"
+  type        = string
+  default     = "POSTGRES_15"
 }
 
 variable "region" {
-  type = string
+  description = "GCP region"
+  type        = string
 }
 
 variable "project_id" {
-  type = string
+  description = "GCP project ID"
+  type        = string
 }
 
 variable "tier" {
-  type    = string
-  default = "db-f1-micro"
+  description = "Cloud SQL machine tier"
+  type        = string
+  default     = "db-f1-micro"
 }
 
 variable "availability_type" {
-  type    = string
-  default = "ZONAL"
+  description = "ZONAL or REGIONAL"
+  type        = string
+  default     = "ZONAL"
 }
 
 variable "vpc_network" {
-  type = string
+  description = "VPC network self-link for private IP"
+  type        = string
 }
 
 variable "database_name" {
-  type = string
+  description = "Name of the database inside the instance"
+  type        = string
 }
 
 variable "db_user" {
-  type = string
+  description = "Database username"
+  type        = string
 }
 
 variable "db_password" {
-  type      = string
-  sensitive = true
+  description = "Database password"
+  type        = string
+  sensitive   = true
 }
 
 variable "deletion_protection" {
-  type    = bool
-  default = true
+  description = "Enable GCP-level deletion protection"
+  type        = bool
+  default     = true
 }

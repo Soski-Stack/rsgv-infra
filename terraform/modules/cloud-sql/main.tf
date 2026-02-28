@@ -20,12 +20,24 @@ resource "google_sql_database_instance" "this" {
   }
 
   deletion_protection = var.deletion_protection
+
+  lifecycle {
+    prevent_destroy = true
+    # Ignore changes to settings that GCP manages automatically
+    ignore_changes = [
+      settings[0].disk_size,
+    ]
+  }
 }
 
 resource "google_sql_database" "db" {
   name     = var.database_name
   instance = google_sql_database_instance.this.name
   project  = var.project_id
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_sql_user" "app_user" {
@@ -33,4 +45,9 @@ resource "google_sql_user" "app_user" {
   instance = google_sql_database_instance.this.name
   password = var.db_password
   project  = var.project_id
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [password]
+  }
 }

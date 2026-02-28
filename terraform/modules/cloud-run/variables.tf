@@ -1,49 +1,61 @@
 variable "service_name" {
-  type = string
+  description = "Cloud Run service name"
+  type        = string
 }
 
 variable "region" {
-  type = string
+  description = "GCP region"
+  type        = string
 }
 
 variable "project_id" {
-  type = string
+  description = "GCP project ID"
+  type        = string
 }
 
-variable "image" {
-  type = string
+variable "image_placeholder" {
+  description = "Initial container image (Terraform ignores updates — image is managed by rsgv-crm CI/CD)"
+  type        = string
+  default     = "us-docker.pkg.dev/cloudrun/container/hello:latest"
 }
 
 variable "cpu" {
-  type    = string
-  default = "1000m"
+  description = "CPU limit"
+  type        = string
+  default     = "1000m"
 }
 
 variable "memory" {
-  type    = string
-  default = "512Mi"
+  description = "Memory limit"
+  type        = string
+  default     = "512Mi"
 }
 
 variable "min_instances" {
-  type    = number
-  default = 0
+  description = "Minimum number of instances"
+  type        = number
+  default     = 0
 }
 
 variable "max_instances" {
-  type    = number
-  default = 10
+  description = "Maximum number of instances"
+  type        = number
+  default     = 10
 }
 
 variable "env_vars" {
-  type    = map(string)
-  default = {}
+  description = "Static environment variables (secrets should use Secret Manager)"
+  type        = map(string)
+  default     = {}
 }
 
 variable "service_account_email" {
-  type = string
+  description = "Service account email for Cloud Run identity"
+  type        = string
 }
 
 variable "allow_unauthenticated" {
-  type    = bool
-  default = false
+  description = "Allow unauthenticated public access"
+  type        = bool
+  default     = false
 }

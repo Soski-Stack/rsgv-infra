@@ -9,13 +9,13 @@ variable "region" {
   default     = "us-east1"
 }
 
-variable "vpc_network" {
-  description = "VPC network self-link"
+variable "vpc_network_name" {
+  description = "Name of the existing VPC network"
   type        = string
 }
 
-variable "api_image" {
-  description = "Container image for the API service"
+variable "cloud_sql_instance_name" {
+  description = "Name of the existing Cloud SQL instance"
   type        = string
 }
 

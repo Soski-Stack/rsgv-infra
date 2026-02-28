@@ -17,12 +17,17 @@ provider "google" {
   region  = var.region
 }
 
+# Reference the existing VPC — Terraform does not own or manage it
+data "google_compute_network" "vpc" {
+  name    = var.vpc_network_name
+  project = var.project_id
+}
+
 module "cloud_run_api" {
   source                = "../../terraform/modules/cloud-run"
   service_name          = "rsgv-api-dev"
   region                = var.region
   project_id            = var.project_id
-  image                 = var.api_image
   service_account_email = var.service_account_email
   min_instances         = 0
   max_instances         = 5
@@ -32,14 +37,14 @@ module "cloud_run_api" {
 
 module "cloud_sql" {
   source              = "../../terraform/modules/cloud-sql"
-  instance_name       = "rsgv-db-dev"
+  instance_name       = var.cloud_sql_instance_name
   region              = var.region
   project_id          = var.project_id
   tier                = "db-f1-micro"
   availability_type   = "ZONAL"
-  vpc_network         = var.vpc_network
+  vpc_network         = data.google_compute_network.vpc.self_link
   database_name       = "rsgv"
-  db_user             = "rsgv_app"
+  db_user             = "rsgv-app"
   db_password         = var.db_password
   deletion_protection = false
 }
@@ -50,7 +55,7 @@ module "memorystore" {
   region         = var.region
   project_id     = var.project_id
   memory_size_gb = 1
-  vpc_network    = var.vpc_network
+  vpc_network    = data.google_compute_network.vpc.self_link
 }
 
 module "gcs_uploads" {

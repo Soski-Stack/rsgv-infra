@@ -6,7 +6,9 @@ resource "google_cloud_run_service" "this" {
   template {
     spec {
       containers {
-        image = var.image
+        # Image is managed by rsgv-crm CI/CD — set a placeholder here;
+        # actual deploys update the image via gcloud run deploy, not Terraform.
+        image = var.image_placeholder
 
         resources {
           limits = {
@@ -37,6 +39,15 @@ resource "google_cloud_run_service" "this" {
   traffic {
     percent         = 100
     latest_revision = true
+  }
+
+  lifecycle {
+    # Image updates come from rsgv-crm — do not let Terraform revert them
+    ignore_changes = [
+      template[0].spec[0].containers[0].image,
+      template[0].metadata[0].annotations["run.googleapis.com/client-name"],
+      template[0].metadata[0].annotations["run.googleapis.com/client-version"],
+    ]
   }
 }
 

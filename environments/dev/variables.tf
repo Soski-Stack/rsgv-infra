@@ -9,23 +9,23 @@ variable "region" {
   default     = "us-east1"
 }
 
-variable "vpc_network" {
-  description = "VPC network self-link"
+variable "vpc_network_name" {
+  description = "Name of the existing VPC network (Terraform will reference it via data source, not manage it)"
   type        = string
 }
 
-variable "api_image" {
-  description = "Container image for the API service"
+variable "cloud_sql_instance_name" {
+  description = "Name of the existing Cloud SQL instance to import/manage"
   type        = string
 }
 
 variable "service_account_email" {
-  description = "Service account email for Cloud Run"
+  description = "Service account email for Cloud Run identity"
   type        = string
 }
 
 variable "api_env_vars" {
-  description = "Environment variables for the API container"
+  description = "Static environment variables for the API (non-secret)"
   type        = map(string)
   default     = {}
 }
@@ -37,7 +37,7 @@ variable "db_password" {
 }
 
 variable "secrets" {
-  description = "Secrets to store in Secret Manager"
+  description = "Secrets to provision in Secret Manager"
   type        = map(string)
   sensitive   = true
   default     = {}
