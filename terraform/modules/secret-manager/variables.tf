@@ -1,2 +1,9 @@
-variable "project_id" { type = string }
-variable "secrets"    { type = map(string); sensitive = true; default = {} }
+variable "project_id" {
+  type = string
+}
+
+variable "secrets" {
+  type      = map(string)
+  sensitive = true
+  default   = {}
+}
