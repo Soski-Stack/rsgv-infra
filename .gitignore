@@ -1,0 +1,22 @@
+# Terraform state and local files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Credentials / secrets
+*.pem
+*.key
+*.p12
+service-account*.json
+
+# OS
+.DS_Store
+Thumbs.db

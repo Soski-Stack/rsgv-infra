@@ -1,0 +1,2 @@
+output "url"          { value = google_cloud_run_service.this.status[0].url }
+output "service_name" { value = google_cloud_run_service.this.name }
