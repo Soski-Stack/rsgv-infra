@@ -42,8 +42,8 @@ module "cloud_sql" {
   tier                = "db-g1-small"
   availability_type   = "REGIONAL"
   vpc_network         = data.google_compute_network.vpc.self_link
-  database_name       = "rsgv"
-  db_user             = "rsgv-app"
+  database_name       = "rsgv_dev"
+  db_user             = "rsgv_app"
   db_password         = var.db_password
   deletion_protection = true
 }

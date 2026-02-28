@@ -8,11 +8,11 @@
 # }
 
 # import {
-#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv"
+#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv_dev"
 #   to = module.cloud_sql.google_sql_database.db
 # }
 
 # import {
-#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv-app"
+#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv_app"
 #   to = module.cloud_sql.google_sql_user.app_user
 # }

@@ -43,8 +43,8 @@ module "cloud_sql" {
   tier                = "db-custom-1-3840"
   availability_type   = "ZONAL"
   vpc_network         = data.google_compute_network.vpc.self_link
-  database_name       = "rsgv"
-  db_user             = "rsgv-app"
+  database_name       = "rsgv_dev"
+  db_user             = "rsgv_app"
   db_password         = var.db_password
   deletion_protection = true
   # Match live instance settings

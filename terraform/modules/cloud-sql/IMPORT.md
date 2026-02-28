@@ -14,14 +14,14 @@ terraform import \
 ```bash
 terraform import \
   module.cloud_sql.google_sql_database.db \
-  <PROJECT_ID>/rsgv-db-dev/rsgv
+  <PROJECT_ID>/rsgv-db-dev/rsgv_dev
 ```
 
 ## 3. App User
 ```bash
 terraform import \
   module.cloud_sql.google_sql_user.app_user \
-  <PROJECT_ID>/rsgv-db-dev/rsgv-app
+  <PROJECT_ID>/rsgv-db-dev/rsgv_app
 ```
 
 ## Notes
