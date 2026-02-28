@@ -23,6 +23,11 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
       - name: Terraform Init
         run: terraform init
+      - name: Remove stale Terraform lock (if any)
+        run: |
+          gsutil -q stat gs://rsgv-tfstate-prod/infra/prod/*.tflock \
+            && gsutil rm gs://rsgv-tfstate-prod/infra/prod/*.tflock \
+            || true
       - name: Terraform Apply
         env:
           TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
