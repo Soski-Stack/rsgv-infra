@@ -1,27 +1,27 @@
 # Importing Existing Cloud SQL Resources
 
 Run these commands **once** to bring existing GCP resources under Terraform management.
-Replace `<PROJECT_ID>` and `<INSTANCE_NAME>` with actual values.
+Replace `<PROJECT_ID>` and `rsgv-db-dev` with actual values.
 
 ## 1. Cloud SQL Instance
 ```bash
 terraform import \
   module.cloud_sql.google_sql_database_instance.this \
-  <PROJECT_ID>/<INSTANCE_NAME>
+  <PROJECT_ID>/rsgv-db-dev
 ```
 
 ## 2. Database
 ```bash
 terraform import \
   module.cloud_sql.google_sql_database.db \
-  <PROJECT_ID>/<INSTANCE_NAME>/rsgv
+  <PROJECT_ID>/rsgv-db-dev/rsgv
 ```
 
 ## 3. App User
 ```bash
 terraform import \
   module.cloud_sql.google_sql_user.app_user \
-  <PROJECT_ID>/<INSTANCE_NAME>/rsgv-app
+  <PROJECT_ID>/rsgv-db-dev/rsgv-app
 ```
 
 ## Notes

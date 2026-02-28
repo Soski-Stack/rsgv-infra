@@ -17,6 +17,7 @@ variable "vpc_network_name" {
 variable "cloud_sql_instance_name" {
   description = "Name of the existing Cloud SQL instance to import/manage"
   type        = string
+  default     = "rsgv-db-dev"
 }
 
 variable "service_account_email" {

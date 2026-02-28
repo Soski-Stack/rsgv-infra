@@ -3,16 +3,16 @@
 # After import is complete, these blocks can be removed (the state will persist).
 
 # import {
-#   id = "<PROJECT_ID>/<CLOUD_SQL_INSTANCE_NAME>"
+#   id = "<PROJECT_ID>/rsgv-db-dev"
 #   to = module.cloud_sql.google_sql_database_instance.this
 # }
 
 # import {
-#   id = "<PROJECT_ID>/<CLOUD_SQL_INSTANCE_NAME>/rsgv"
+#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv"
 #   to = module.cloud_sql.google_sql_database.db
 # }
 
 # import {
-#   id = "<PROJECT_ID>/<CLOUD_SQL_INSTANCE_NAME>/rsgv-app"
+#   id = "<PROJECT_ID>/rsgv-db-dev/rsgv-app"
 #   to = module.cloud_sql.google_sql_user.app_user
 # }
