@@ -1,5 +1,5 @@
 variable "instance_name" {
-  description = "Cloud SQL instance name (must match existing GCP resource if importing)"
+  description = "Cloud SQL instance name"
   type        = string
 }
 
@@ -22,7 +22,7 @@ variable "project_id" {
 variable "tier" {
   description = "Cloud SQL machine tier"
   type        = string
-  default     = "db-f1-micro"
+  default     = "db-custom-1-3840"
 }
 
 variable "availability_type" {
@@ -56,4 +56,22 @@ variable "deletion_protection" {
   description = "Enable GCP-level deletion protection"
   type        = bool
   default     = true
+}
+
+variable "backup_start_time" {
+  description = "Backup start time (HH:MM)"
+  type        = string
+  default     = "02:00"
+}
+
+variable "point_in_time_recovery_enabled" {
+  description = "Enable point-in-time recovery"
+  type        = bool
+  default     = false
+}
+
+variable "enable_iam_authentication" {
+  description = "Enable Cloud SQL IAM authentication flag"
+  type        = bool
+  default     = false
 }

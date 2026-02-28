@@ -40,13 +40,17 @@ module "cloud_sql" {
   instance_name       = var.cloud_sql_instance_name
   region              = var.region
   project_id          = var.project_id
-  tier                = "db-f1-micro"
+  tier                = "db-custom-1-3840"
   availability_type   = "ZONAL"
   vpc_network         = data.google_compute_network.vpc.self_link
   database_name       = "rsgv"
   db_user             = "rsgv-app"
   db_password         = var.db_password
-  deletion_protection = false
+  deletion_protection = true
+  # Match live instance settings
+  backup_start_time              = "16:00"
+  point_in_time_recovery_enabled = true
+  enable_iam_authentication      = true
 }
 
 module "memorystore" {
