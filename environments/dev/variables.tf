@@ -43,3 +43,21 @@ variable "secrets" {
   sensitive   = true
   default     = {}
 }
+
+variable "bastion_zone" {
+  description = "GCP zone for the bastion VM"
+  type        = string
+  default     = "us-east1-b"
+}
+
+variable "bastion_subnetwork" {
+  description = "Subnetwork for the bastion VM (defaults to VPC default)"
+  type        = string
+  default     = "default"
+}
+
+variable "bastion_allowed_admins" {
+  description = "IAM principals allowed to SSH to bastion via IAP"
+  type        = list(string)
+  default     = []
+}

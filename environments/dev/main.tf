@@ -74,3 +74,21 @@ module "secrets" {
   project_id = var.project_id
   secrets    = var.secrets
 }
+
+module "bastion" {
+  source = "../../modules/bastion"
+
+  project_id            = var.project_id
+  region                = var.region
+  zone                  = var.bastion_zone
+  network               = var.vpc_network_name
+  subnetwork            = var.bastion_subnetwork
+  service_account_email = var.service_account_email
+  cloud_sql_instance    = "${var.project_id}:${var.region}:${var.cloud_sql_instance_name}"
+  allowed_admins        = var.bastion_allowed_admins
+  environment           = "dev"
+  labels = {
+    team = "rsgv"
+    cost-center = "engineering"
+  }
+}
