@@ -56,7 +56,7 @@ variable "cloud_sql_instance" {
 }
 
 variable "environment" {
-  description = "Environment label (dev, staging, prod)"
+  description = "Environment label (dev, prod)"
   type        = string
   default     = "dev"
 }

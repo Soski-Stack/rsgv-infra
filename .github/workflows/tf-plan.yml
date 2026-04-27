@@ -2,7 +2,7 @@ name: Terraform Plan
 
 on:
   pull_request:
-    branches: [develop, staging, main]
+    branches: [develop, main]
 
 env:
   TF_VERSION: "1.7.0"
@@ -13,8 +13,9 @@ jobs:
     name: Plan (${{ matrix.env }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        env: [dev, staging, prod]
+        env: [dev, prod]
     defaults:
       run:
         working-directory: environments/${{ matrix.env }}
@@ -31,6 +32,7 @@ jobs:
         run: |
           terraform plan \
             -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
+            -var="vpc_network_name=${{ secrets.VPC_NETWORK_NAME }}" \
+            -var="service_account_email=${{ secrets.SA_EMAIL }}" \
             -var="db_password=PLACEHOLDER" \
             -no-color
-        continue-on-error: true
