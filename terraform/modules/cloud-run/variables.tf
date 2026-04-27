@@ -59,3 +59,27 @@ variable "allow_unauthenticated" {
   type        = bool
   default     = false
 }
+
+variable "container_port" {
+  description = "Container port Cloud Run routes traffic to. null = default (8080)"
+  type        = number
+  default     = null
+}
+
+variable "cpu_throttling_disabled" {
+  description = "Disable CPU throttling between requests (always-allocated CPU). Increases cost."
+  type        = bool
+  default     = false
+}
+
+variable "vpc_connector" {
+  description = "Serverless VPC access connector name (empty = no connector)"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_egress" {
+  description = "VPC egress mode when vpc_connector is set: all-traffic or private-ranges-only"
+  type        = string
+  default     = "private-ranges-only"
+}

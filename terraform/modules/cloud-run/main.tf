@@ -17,6 +17,13 @@ resource "google_cloud_run_service" "this" {
           }
         }
 
+        dynamic "ports" {
+          for_each = var.container_port != null ? [var.container_port] : []
+          content {
+            container_port = ports.value
+          }
+        }
+
         dynamic "env" {
           for_each = var.env_vars
           content {
@@ -29,10 +36,19 @@ resource "google_cloud_run_service" "this" {
     }
 
     metadata {
-      annotations = {
-        "autoscaling.knative.dev/minScale" = tostring(var.min_instances)
-        "autoscaling.knative.dev/maxScale" = tostring(var.max_instances)
-      }
+      annotations = merge(
+        {
+          "autoscaling.knative.dev/minScale" = tostring(var.min_instances)
+          "autoscaling.knative.dev/maxScale" = tostring(var.max_instances)
+        },
+        var.cpu_throttling_disabled ? {
+          "run.googleapis.com/cpu-throttling" = "false"
+        } : {},
+        var.vpc_connector != "" ? {
+          "run.googleapis.com/vpc-access-connector" = var.vpc_connector
+          "run.googleapis.com/vpc-access-egress"    = var.vpc_egress
+        } : {},
+      )
     }
   }
 

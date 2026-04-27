@@ -10,8 +10,18 @@ resource "google_storage_bucket" "this" {
     enabled = var.versioning_enabled
   }
 
-  lifecycle_rule {
-    condition { age = var.lifecycle_age_days }
-    action { type = "Delete" }
+  dynamic "lifecycle_rule" {
+    for_each = var.enable_lifecycle_delete ? [1] : []
+    content {
+      condition { age = var.lifecycle_age_days }
+      action { type = "Delete" }
+    }
   }
+}
+
+resource "google_storage_bucket_iam_member" "public_read" {
+  count  = var.public_read ? 1 : 0
+  bucket = google_storage_bucket.this.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
 }
