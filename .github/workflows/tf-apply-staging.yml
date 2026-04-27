@@ -3,6 +3,11 @@ name: Terraform Apply — Staging
 on:
   push:
     branches: [staging]
+    paths:
+      - 'environments/staging/**'
+      - 'terraform/modules/**'
+      - 'modules/**'
+      - '.github/workflows/tf-apply-staging.yml'
 
 concurrency:
   group: "terraform-apply-staging"

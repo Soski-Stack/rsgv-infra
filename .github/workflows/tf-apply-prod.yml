@@ -3,6 +3,11 @@ name: Terraform Apply — Production
 on:
   push:
     branches: [main]
+    paths:
+      - 'environments/prod/**'
+      - 'terraform/modules/**'
+      - 'modules/**'
+      - '.github/workflows/tf-apply-prod.yml'
 
 concurrency:
   group: "terraform-apply-prod"

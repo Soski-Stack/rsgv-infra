@@ -3,6 +3,11 @@ name: Terraform Apply — Dev
 on:
   push:
     branches: [develop]
+    paths:
+      - 'environments/dev/**'
+      - 'terraform/modules/**'
+      - 'modules/**'
+      - '.github/workflows/tf-apply-dev.yml'
 
 concurrency:
   group: "terraform-apply-dev"
