@@ -29,8 +29,12 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
       - name: Terraform Plan
+        # -lock=false: PR plan reads state but doesn't acquire it, so concurrent
+        # tf-apply-{dev,prod} runs aren't blocked. Plan output may be marginally
+        # stale during a concurrent apply — acceptable for a validation check.
         run: |
           terraform plan \
+            -lock=false \
             -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
             -var="vpc_network_name=${{ secrets.VPC_NETWORK_NAME }}" \
             -var="service_account_email=${{ secrets.SA_EMAIL }}" \
