@@ -7,7 +7,6 @@ on:
       - 'environments/prod/**'
       - 'terraform/modules/**'
       - 'modules/**'
-      - 'variables.tf'
       - '.github/workflows/tf-apply-prod.yml'
 
 concurrency:

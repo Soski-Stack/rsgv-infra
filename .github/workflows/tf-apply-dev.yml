@@ -7,7 +7,6 @@ on:
       - 'environments/dev/**'
       - 'terraform/modules/**'
       - 'modules/**'
-      - 'variables.tf'
       - '.github/workflows/tf-apply-dev.yml'
 
 concurrency:

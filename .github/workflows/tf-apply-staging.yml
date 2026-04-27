@@ -7,7 +7,6 @@ on:
       - 'environments/staging/**'
       - 'terraform/modules/**'
       - 'modules/**'
-      - 'variables.tf'
       - '.github/workflows/tf-apply-staging.yml'
 
 concurrency:
