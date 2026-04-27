@@ -32,11 +32,6 @@ jobs:
         run: terraform init
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
-      - name: Remove stale Terraform lock (if any)
-        run: |
-          gsutil -q stat gs://rsgv-tfstate-prod/infra/prod/*.tflock \
-            && gsutil rm gs://rsgv-tfstate-prod/infra/prod/*.tflock \
-            || true
       - name: Terraform Plan
         run: |
           set -o pipefail
@@ -90,6 +85,6 @@ jobs:
           name: tfplan-prod-${{ github.sha }}
           path: environments/prod
       - name: Terraform Apply
-        run: terraform apply tfplan
+        run: terraform apply -input=false tfplan
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
