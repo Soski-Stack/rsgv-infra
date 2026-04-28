@@ -10,16 +10,61 @@ on:
       - '.github/workflows/tf-apply-prod.yml'
 
 concurrency:
-  group: "terraform-apply-prod"
-  cancel-in-progress: true
+  group: terraform-apply-prod
+  cancel-in-progress: false
 
 env:
   TF_VERSION: "1.7.0"
-  GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
 
 jobs:
-  apply-prod:
-    name: Apply to Production
+  plan:
+    name: Plan (Prod)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: environments/prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
+      - name: Terraform Plan
+        run: |
+          set -o pipefail
+          terraform plan -out=tfplan -no-color | tee plan-output.txt
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.GCP_REGION }}
+          TF_VAR_vpc_network_name: ${{ secrets.VPC_NETWORK_NAME }}
+          TF_VAR_service_account_email: ${{ secrets.SA_EMAIL }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD_PROD }}
+          TF_VAR_cloud_sql_instance_name: rsgv-db-prod
+      - name: Post Plan Summary
+        if: always()
+        run: |
+          {
+            echo "## Terraform Plan — Production"
+            echo ""
+            echo '```hcl'
+            cat plan-output.txt 2>/dev/null || echo "(no plan output captured)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-prod-${{ github.sha }}
+          path: environments/prod/tfplan
+          retention-days: 1
+          if-no-files-found: error
+
+  apply:
+    name: Apply (Prod) — manual approval required
+    needs: plan
     runs-on: ubuntu-latest
     environment: production
     defaults:
@@ -32,17 +77,14 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
       - name: Terraform Init
         run: terraform init
-      - name: Remove stale Terraform lock (if any)
-        run: |
-          gsutil -q stat gs://rsgv-tfstate-prod/infra/prod/*.tflock \
-            && gsutil rm gs://rsgv-tfstate-prod/infra/prod/*.tflock \
-            || true
-      - name: Terraform Apply
         env:
-          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.GCP_REGION }}
-          TF_VAR_vpc_network_name: ${{ secrets.VPC_NETWORK_NAME }}
-          TF_VAR_cloud_sql_instance_name: ${{ secrets.CLOUD_SQL_INSTANCE_NAME_PROD }}
-          TF_VAR_service_account_email: ${{ secrets.SA_EMAIL }}
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD_PROD }}
-        run: terraform apply -auto-approve
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-prod-${{ github.sha }}
+          path: environments/prod
+      - name: Terraform Apply
+        run: terraform apply -input=false tfplan
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY_PROD }}
