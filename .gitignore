@@ -1,0 +1,22 @@
+# Terraform state and local files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# .terraform.lock.hcl is intentionally NOT ignored — committed for provider version pinning
+
+# Credentials / secrets
+*.pem
+*.key
+*.p12
+service-account*.json
+
+# OS
+.DS_Store
+Thumbs.db

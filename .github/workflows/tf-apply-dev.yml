@@ -1,0 +1,90 @@
+name: Terraform Apply — Dev
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'environments/dev/**'
+      - 'terraform/modules/**'
+      - 'modules/**'
+      - '.github/workflows/tf-apply-dev.yml'
+
+concurrency:
+  group: terraform-apply-dev
+  cancel-in-progress: false
+
+env:
+  TF_VERSION: "1.7.0"
+
+jobs:
+  plan:
+    name: Plan (Dev)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: environments/dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+      - name: Terraform Plan
+        run: |
+          set -o pipefail
+          terraform plan -out=tfplan -no-color | tee plan-output.txt
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.GCP_REGION }}
+          TF_VAR_vpc_network_name: ${{ secrets.VPC_NETWORK_NAME }}
+          TF_VAR_service_account_email: ${{ secrets.SA_EMAIL }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD_DEV }}
+          TF_VAR_cloud_sql_instance_name: rsgv-db-dev
+      - name: Post Plan Summary
+        if: always()
+        run: |
+          {
+            echo "## Terraform Plan — Dev"
+            echo ""
+            echo '```hcl'
+            cat plan-output.txt 2>/dev/null || echo "(no plan output captured)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-dev-${{ github.sha }}
+          path: environments/dev/tfplan
+          retention-days: 1
+          if-no-files-found: error
+
+  apply:
+    name: Apply (Dev) — manual approval required
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: environments/dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-dev-${{ github.sha }}
+          path: environments/dev
+      - name: Terraform Apply
+        run: terraform apply -input=false tfplan
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
